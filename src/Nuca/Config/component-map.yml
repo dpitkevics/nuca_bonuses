@@ -1,0 +1,4 @@
+components:
+  user : \Nuca\User\User
+
+  database: \Nuca\Core\Database
