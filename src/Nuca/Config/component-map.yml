@@ -1,5 +1,7 @@
 components:
-  userSql : \Nuca\User\UserSql
+    # User Components
+    userSql : \Nuca\User\UserSql
 
-  database: \Nuca\Core\Database
-  cache: \Nuca\Core\Cache
+    # Core Components
+    database: \Nuca\Core\Database
+    cache: \Nuca\Core\Cache
