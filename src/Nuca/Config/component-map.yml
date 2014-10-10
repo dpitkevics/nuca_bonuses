@@ -1,6 +1,8 @@
 components:
     # User Components
-    userSql : \Nuca\User\UserSql
+    userSql: \Nuca\User\UserSql
+    moneyAccountSql: \Nuca\MoneyAccounts\MoneyAccountsSql
+    moneyAccountTypeSql: \Nuca\MoneyAccounts\MoneyAccountTypeSql
 
     # Core Components
     database: \Nuca\Core\Database

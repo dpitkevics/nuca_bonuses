@@ -16,7 +16,7 @@ class UserSql extends Base
         $db = $this->getComponent('database');
 
         $sql = "
-            CREATE TABLE IF NOT EXISTS {$this->getPrefixedTableName()} (
+            CREATE TABLE IF NOT EXISTS {$this->getPrefixedTableName('user')} (
                 id INT PRIMARY KEY AUTO_INCREMENT,
                 login VARCHAR (32) NOT NULL,
                 {$db->timestamps()},
@@ -27,7 +27,7 @@ class UserSql extends Base
         $response = $db->execute($sql);
 
         if ($db->getVersion() < 5.6) {
-            $db->createModifiedAtTrigger($this->getPrefixedTableName());
+            $db->createModifiedAtTrigger($this->getPrefixedTableName('user'));
         }
 
         return $response;
@@ -43,7 +43,7 @@ class UserSql extends Base
         $db = $this->getComponent('database');
 
         $sql = "
-            INSERT INTO {$this->getPrefixedTableName()} (login) VALUES ('{$login}');
+            INSERT INTO {$this->getPrefixedTableName('user')} (login) VALUES ('{$login}');
         ";
 
         return $db->execute($sql);
@@ -59,32 +59,9 @@ class UserSql extends Base
         $db = $this->getComponent('database');
 
         $sql = "
-            UPDATE {$this->getPrefixedTableName()} SET deleted_at = now() WHERE id = {$userId};
+            UPDATE {$this->getPrefixedTableName('user')} SET deleted_at = now() WHERE id = {$userId};
         ";
 
         return $db->execute($sql);
-    }
-
-    /**
-     * @return mixed|string
-     * @throws \Exception
-     */
-    private function getPrefixedTableName()
-    {
-        $cache = $this->getComponent('cache');
-        $prefixedTableName = $cache->get('userTableName');
-        if ($prefixedTableName) {
-            return $prefixedTableName;
-        } else {
-            $prefix = $this->getPrefix();
-
-            $tableName = $this->getTableName('user');
-            if ($prefix !== null) {
-                $tableName = $prefix . '_' . $tableName;
-            }
-            $cache->set('userTableName', $tableName);
-        }
-
-        return $tableName;
     }
 } 

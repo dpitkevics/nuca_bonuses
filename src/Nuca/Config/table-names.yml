@@ -1,2 +1,6 @@
 user:
     users
+moneyAccount:
+    money_accounts
+moneyAccountType:
+    money_account_types

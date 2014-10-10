@@ -118,6 +118,25 @@ class Database extends Base
         }
     }
 
+    public function checkIfTableExists($table)
+    {
+        $cache = $this->getComponent('cache');
+        $tables = $cache->get('existingTables');
+        if ($tables) {
+            if (array_key_exists($table, $tables)) {
+                return true;
+            }
+        }
+
+        $sql = "SHOW TABLES LIKE '%{$table}%'";
+        $result = $this->query($sql);
+        if ($result) {
+            return true;
+        }
+
+        return false;
+    }
+
     /**
      * @param $sql
      */

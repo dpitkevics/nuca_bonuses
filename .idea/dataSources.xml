@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
-  <component name="DataSourceManagerImpl" format="xml" hash="479246887">
+  <component name="DataSourceManagerImpl" format="xml" hash="1257858357">
     <data-source source="LOCAL" name="MySQL - nuca_bonuses@localhost" uuid="91d62d2a-bfc3-4d7a-aa1f-e047ffad8f84">
       <driver-ref>mysql</driver-ref>
       <synchronize>true</synchronize>

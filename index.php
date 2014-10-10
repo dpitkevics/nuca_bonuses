@@ -22,13 +22,5 @@ $cacheConnection = array(
 
 $init = new Initializer($dbConnection, $cacheConnection);
 
-$userSql = $init->getComponent('userSql');
-//$userSql->createUserTable();
-
-$db = $init->getComponent('database');
-echo $db->getVersion();
-echo $db->getVersion();
-echo $db->getVersion();
-
-echo "<pre>";
-var_dump(\Nuca\Core\Database::$sqls);
+$moneyAccountSql = $init->getComponent('moneyAccountSql');
+$moneyAccountSql->createMoneyAccountsTable();

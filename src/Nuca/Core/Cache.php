@@ -83,4 +83,9 @@ class Cache extends Base
 
         $this->getCache()->flush($keysToGet);
     }
+
+    public function flush()
+    {
+        $this->getCache()->flushAll();
+    }
 } 

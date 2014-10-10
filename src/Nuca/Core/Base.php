@@ -33,7 +33,7 @@ class Base
 
     /**
      * @param $component
-     * @return \Nuca\User\UserSql|\Nuca\Core\Database|\Nuca\Core\Cache
+     * @return \Nuca\User\UserSql|\Nuca\Core\Database|\Nuca\Core\Cache|\Nuca\MoneyAccounts\MoneyAccountsSql
      * @throws \Exception
      */
     public function getComponent($component)
@@ -91,6 +91,13 @@ class Base
      */
     protected function getTableName($component)
     {
+        $cache = $this->getComponent('cache');
+        $tableName = $cache->get('tableName-' . $component);
+
+        if ($tableName) {
+            return $tableName;
+        }
+
         $parser = new Parser();
         $tableNamesYmlPath = _ROOT_ . '/Nuca/Config/table-names.yml';
         $ymlData = $parser->parse(file_get_contents($tableNamesYmlPath));
@@ -100,6 +107,27 @@ class Base
         }
 
         $tableName = $ymlData[$component];
+
+        $cache->set('tableName-' . $component, $tableName);
+
+        return $tableName;
+    }
+
+    protected function getPrefixedTableName($component)
+    {
+        $cache = $this->getComponent('cache');
+        $prefixedTableName = $cache->get($component . 'TableName');
+        if ($prefixedTableName) {
+            return $prefixedTableName;
+        }
+
+        $prefix = $this->getPrefix();
+
+        $tableName = $this->getTableName($component);
+        if ($prefix !== null) {
+            $tableName = $prefix . '_' . $tableName;
+        }
+        $cache->set($component . 'TableName', $tableName);
 
         return $tableName;
     }
