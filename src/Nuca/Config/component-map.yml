@@ -1,4 +1,4 @@
 components:
-  user : \Nuca\User\User
+  userSql : \Nuca\User\UserSql
 
   database: \Nuca\Core\Database

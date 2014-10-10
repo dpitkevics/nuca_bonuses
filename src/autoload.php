@@ -2,6 +2,7 @@
 
 define ('_ROOT_', __DIR__);
 define ('_VENDOR_', _ROOT_ . '/../vendor');
+define ('_IS_DEV_', true);
 
  function autoloader($className)
  {

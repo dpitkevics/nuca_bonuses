@@ -34,9 +34,26 @@ class Database extends Base
      */
     public function timestamps()
     {
-        $sql = "modified_at TIMESTAMP DEFAULT now(),
-                created_at TIMESTAMP DEFAULT now()";
+        if ($this->getVersion() < 5.6) {
+            $modifiedAtSql = "modified_at TIMESTAMP DEFAULT 0, ";
+        } else {
+            $modifiedAtSql = "modified_at TIMESTAMP DEFAULT now(), ";
+        }
+        $createdAtSql = "created_at TIMESTAMP DEFAULT now()";
+        $sql = $modifiedAtSql . $createdAtSql;
         return $sql;
+    }
+
+    public function createModifiedAtTrigger($table)
+    {
+        $sql = "DROP TRIGGER IF EXISTS `update_{$table}_trigger`;";
+        $this->execute($sql);
+        $sql = "
+            CREATE TRIGGER `update_{$table}_trigger` BEFORE UPDATE ON `{$table}`
+            FOR EACH ROW SET NEW.`modified_at` = NOW()
+        ";
+
+        return $this->execute($sql);
     }
 
     /**
@@ -75,6 +92,20 @@ class Database extends Base
         $dbh = $this->getDb();
         $result = $dbh->exec($sql);
         return $result;
+    }
+
+    public function getVersion()
+    {
+        $sql = "
+            SHOW VARIABLES LIKE '%version%'
+        ";
+
+        $result = $this->query($sql);
+        $row = $result->fetch();
+        $versionString = $row['Value'];
+        $versionParts = explode('-', $versionString);
+        $version = current($versionParts);
+        return $version;
     }
 
     /**

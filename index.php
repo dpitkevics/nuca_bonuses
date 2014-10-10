@@ -15,4 +15,8 @@ $dbConnection = array(
 
 $init = new Initializer($dbConnection);
 
-$user = $init->getComponent('user');
+$userSql = $init->getComponent('userSql');
+$userSql->createUserTable();
+
+echo "<pre>";
+var_dump(\Nuca\Core\Database::$sqls);

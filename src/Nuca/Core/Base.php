@@ -31,7 +31,7 @@ class Base
 
     /**
      * @param $component
-     * @return mixed
+     * @return \Nuca\User\UserSql|\Nuca\Core\Database
      * @throws \Exception
      */
     public function getComponent($component)
@@ -45,7 +45,7 @@ class Base
         // TODO: Cache components
 
         if (!array_key_exists($component, $components)) {
-            throw new \Exception("Component not found");
+            throw new \Exception("Component '{$component}' not found");
         }
 
         $componentClass = $components[$component];

@@ -6,7 +6,7 @@ namespace Nuca\User;
 
 use Nuca\Core\Base;
 
-class User extends Base
+class UserSql extends Base
 {
     /**
      * @throws \Exception
@@ -24,7 +24,13 @@ class User extends Base
             );
         ";
 
-        return $db->execute($sql);
+        $response = $db->execute($sql);
+
+        if ($db->getVersion() < 5.6) {
+            $db->createModifiedAtTrigger($this->getPrefixedTableName());
+        }
+
+        return $response;
     }
 
     /**
