@@ -50,7 +50,9 @@ class Initializer extends Base
             exit;
         }
 
-        $dbh->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
+        if (_IS_DEV_) {
+            $dbh->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
+        }
 
         $database = $this->getComponent('database');
         $database->setDb($dbh);
