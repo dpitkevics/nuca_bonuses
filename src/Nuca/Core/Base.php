@@ -13,6 +13,8 @@ class Base
      */
     private static $dbPrefix;
 
+    private static $loadedComponents = array();
+
     /**
      * @param $prefix
      */
@@ -31,27 +33,55 @@ class Base
 
     /**
      * @param $component
-     * @return \Nuca\User\UserSql|\Nuca\Core\Database
+     * @return \Nuca\User\UserSql|\Nuca\Core\Database|\Nuca\Core\Cache
      * @throws \Exception
      */
     public function getComponent($component)
     {
-        $parser = new Parser();
-        $yml = file_get_contents(_ROOT_ . '/Nuca/Config/component-map.yml');
+        if (isset(self::$loadedComponents[$component])) {
+            return self::$loadedComponents[$component];
+        } else {
+            if (isset(self::$loadedComponents['cache'])) {
 
-        $data = $parser->parse($yml);
+                /** @var \Nuca\Core\Cache $cache */
+                $cache = self::$loadedComponents['cache'];
+            } else {
+                $cache = null;
+            }
 
-        $components = $data['components'];
-        // TODO: Cache components
+            if ($cache !== null) {
+                $components = $cache->get('components', false);
+                if ($components) {
+                    $components = $components->getData();
+                }
+            } else {
+                $components = null;
+            }
 
-        if (!array_key_exists($component, $components)) {
-            throw new \Exception("Component '{$component}' not found");
+            if ($components === null) {
+                $parser = new Parser();
+                $yml = file_get_contents(_ROOT_ . '/Nuca/Config/component-map.yml');
+
+                $data = $parser->parse($yml);
+
+                $components = $data['components'];
+
+                if ($cache !== null) {
+                    $cache->set('components', $components);
+                }
+            }
+
+            if (!array_key_exists($component, $components)) {
+                throw new \Exception("Component '{$component}' not found");
+            }
+
+            $componentClass = $components[$component];
+            $instance = new $componentClass;
+
+            self::$loadedComponents[$component] = $instance;
+
+            return $instance;
         }
-
-        $componentClass = $components[$component];
-        $instance = new $componentClass;
-
-        return $instance;
     }
 
     /**

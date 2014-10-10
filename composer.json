@@ -10,6 +10,8 @@
         }
     ],
     "require": {
-        "symfony/yaml": "2.0.7"
+        "symfony/yaml": "2.0.7",
+        "sonata-project/cache": "1.0.4",
+        "predis/predis": "v1.0.0"
     }
 }

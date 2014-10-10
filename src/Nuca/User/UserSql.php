@@ -71,12 +71,18 @@ class UserSql extends Base
      */
     private function getPrefixedTableName()
     {
-        // TODO: pievienot cache
-        $prefix = $this->getPrefix();
+        $cache = $this->getComponent('cache');
+        $prefixedTableName = $cache->get('userTableName');
+        if ($prefixedTableName) {
+            return $prefixedTableName;
+        } else {
+            $prefix = $this->getPrefix();
 
-        $tableName = $this->getTableName('user');
-        if ($prefix !== null) {
-            $tableName = $prefix . '_' . $tableName;
+            $tableName = $this->getTableName('user');
+            if ($prefix !== null) {
+                $tableName = $prefix . '_' . $tableName;
+            }
+            $cache->set('userTableName', $tableName);
         }
 
         return $tableName;

@@ -2,3 +2,4 @@ components:
   userSql : \Nuca\User\UserSql
 
   database: \Nuca\Core\Database
+  cache: \Nuca\Core\Cache

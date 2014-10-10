@@ -96,16 +96,26 @@ class Database extends Base
 
     public function getVersion()
     {
-        $sql = "
+        $cache = $this->getComponent('cache');
+        $version = $cache->get('sqlVersion');
+
+        if ($version) {
+            return $version;
+        } else {
+            $sql = "
             SHOW VARIABLES LIKE '%version%'
         ";
 
-        $result = $this->query($sql);
-        $row = $result->fetch();
-        $versionString = $row['Value'];
-        $versionParts = explode('-', $versionString);
-        $version = current($versionParts);
-        return $version;
+            $result = $this->query($sql);
+            $row = $result->fetch();
+            $versionString = $row['Value'];
+            $versionParts = explode('-', $versionString);
+            $version = current($versionParts);
+
+            $cache->set('sqlVersion', $version);
+
+            return $version;
+        }
     }
 
     /**

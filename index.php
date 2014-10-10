@@ -13,10 +13,22 @@ $dbConnection = array(
     'prefix' => 'nuca',
 );
 
-$init = new Initializer($dbConnection);
+$cacheConnection = array(
+    'host'     => '127.0.0.1',
+    'port'     => 6379,
+    'database' => 42,
+    'driver' => 'PRedis',
+);
+
+$init = new Initializer($dbConnection, $cacheConnection);
 
 $userSql = $init->getComponent('userSql');
-$userSql->createUserTable();
+//$userSql->createUserTable();
+
+$db = $init->getComponent('database');
+echo $db->getVersion();
+echo $db->getVersion();
+echo $db->getVersion();
 
 echo "<pre>";
 var_dump(\Nuca\Core\Database::$sqls);

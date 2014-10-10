@@ -9,18 +9,43 @@ class Initializer extends Base
     /**
      * @param $dbConfig
      */
-    public function __construct($dbConfig)
+    public function __construct($dbConfig, $cacheConfig)
     {
-        $this->init($dbConfig);
+        $this->init($dbConfig, $cacheConfig);
     }
 
     /**
      * @param $dbConfig
      * @throws \Exception
      */
-    private function init($dbConfig)
+    private function init($dbConfig, $cacheConfig)
     {
+        $this->setUpCache($cacheConfig);
         $this->setUpDatabaseConnection($dbConfig);
+    }
+
+    private function setUpCache($cacheConfig)
+    {
+        if (!isset($cacheConfig['host'])
+            || !isset($cacheConfig['port'])
+            || !isset($cacheConfig['database'])
+            || !isset($cacheConfig['driver'])) {
+            throw new \Exception("Not all requried cache config parameters are passed. Required are: host, port, database, driver");
+        }
+
+        $driver = $cacheConfig['driver'];
+
+        unset($cacheConfig['driver']);
+
+        if ($driver != "Apc" && $driver != "Memcached" && $driver != "Mongo" && $driver != "Noop" && $driver != "PRedis") {
+            throw new \Exception("Driver '{$driver}' not available. Available cache drivers: Apc, Memcached, Mongo, Noop, PRedis");
+        }
+
+        $cacheClass = "Sonata\\Cache\\Adapter\\Cache\\" . $driver . "Cache";
+        $adapter = new $cacheClass($cacheConfig);
+
+        $cache = $this->getComponent('cache');
+        $cache->setCache($adapter);
     }
 
     /**
